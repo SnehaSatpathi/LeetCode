@@ -10,26 +10,31 @@
  */
 class Solution {
     public ListNode mergeKLists(ListNode[] lists) {
-        ArrayList<Integer> arr = new ArrayList<>();
-        // take all values
-        for (ListNode head : lists) {
-            while (head != null) {
-                arr.add(head.val);
-                head = head.next;
+        PriorityQueue<ListNode> pq =
+            new PriorityQueue<>((a, b) -> a.val - b.val);
+        // add first node of every list
+        for (ListNode node : lists) {
+            if (node != null) {
+                pq.add(node);
             }
         }
-        // sort values
-        Collections.sort(arr);
-        // if empty
-        if (arr.size() == 0) {
-            return null;
-        }
-        // make linked list
-        ListNode head = new ListNode(arr.get(0));
-        ListNode temp = head;
-        for (int i = 1; i < arr.size(); i++) {
-            temp.next = new ListNode(arr.get(i));
-            temp = temp.next;
+        ListNode head = null;
+        ListNode tail = null;
+        while (!pq.isEmpty()) {
+            ListNode small = pq.poll();
+            // first node
+            if (head == null) {
+                head = small;
+                tail = small;
+            }
+            else {
+                tail.next = small;
+                tail = tail.next;
+            }
+            // add next node
+            if (small.next != null) {
+                pq.add(small.next);
+            }
         }
         return head;
     }
