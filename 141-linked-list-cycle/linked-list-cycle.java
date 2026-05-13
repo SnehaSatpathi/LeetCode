@@ -11,22 +11,20 @@
  */
 public class Solution {
     public boolean hasCycle(ListNode head) {
-                // Create a unique dummy marker node
-        ListNode dummy = new ListNode(0);
-        
-        ListNode curr = head;
-        while (curr != null) {
-            // If next points to dummy, we have been here before
-            if (curr.next == dummy) {
+        if (head == null || head.next == null) return false;
+
+        ListNode slow = head;
+        ListNode fast = head;
+
+        while (fast != null && fast.next != null) {
+            slow = slow.next;          // Move 1 step
+            fast = fast.next.next;     // Move 2 steps
+
+            if (slow == fast) {        // They met! Cycle detected
                 return true;
             }
-            
-            // Save next node, then point current node to dummy
-            ListNode temp = curr.next;
-            curr.next = dummy;
-            curr = temp;
         }
-        
-        return false;      
+
+        return false; // Fast reached the end, no cycle
     }
 }
