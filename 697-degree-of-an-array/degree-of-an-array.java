@@ -1,7 +1,7 @@
 class Solution {
     public int findShortestSubArray(int[] nums) {
         int[] count = new int[50000], first = new int[50000];
-        // Initialize first-seen array with -1 to track new numbers
+        // Initialize first-seen array with -1 
         java.util.Arrays.fill(first, -1);
         
         int degree = 0, minLength = 0;
