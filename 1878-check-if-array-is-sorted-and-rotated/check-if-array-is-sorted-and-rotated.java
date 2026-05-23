@@ -9,7 +9,6 @@ public class Solution {
                 count++;
             }
         }
-        
         // If there's 0 or 1 "drop", it's a sorted rotated array
         return count <= 1;
     }
