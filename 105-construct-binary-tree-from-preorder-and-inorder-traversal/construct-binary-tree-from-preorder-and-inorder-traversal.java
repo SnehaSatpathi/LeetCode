@@ -15,36 +15,40 @@
  */
 class Solution {
     public TreeNode buildTree(int[] preorder, int[] inorder) {
+        // Map to find the root's index in the inorder array in O(1) time
+        Map<Integer, Integer> inorderMap = new HashMap<>();
+        for (int i = 0; i < inorder.length; i++) {
+            inorderMap.put(inorder[i], i);
+        }
+        
+        // A single-element array to track the current root in preorder across recursive calls
+        int[] preIdx = new int[]{0}; 
+        
+        // Start the Divide and Conquer process
+        return divideAndConquer(preorder, preIdx, inorderMap, 0, inorder.length - 1);
+    }
 
-        // Base case: if arrays are empty, the tree/subtree is null
-        if (preorder.length == 0 || inorder.length == 0) {
+    private TreeNode divideAndConquer(int[] preorder, int[] preIdx, Map<Integer, Integer> inorderMap, int inStart, int inEnd) {
+        // BASE CASE- If the boundaries cross, this subtree is empty
+        if (inStart > inEnd) {
             return null;
         }
 
-        // The first element in preorder is always the root
-        int rootVal = preorder[0];
+        // DIVIDE- Pick the current root from preorder array and find its split point
+        int rootVal = preorder[preIdx[0]];
+        preIdx[0]++; // Advance to the next root element for subsequent calls
+        
         TreeNode root = new TreeNode(rootVal);
+        int rootIdx = inorderMap.get(rootVal); // Get the midpoint
 
-        // Find where the root is located in the inorder array
-        int mid = 0;
-        for (int i = 0; i < inorder.length; i++) {
-            if (inorder[i] == rootVal) {
-                mid = i;
-                break;
-            }
-        }
+        //  CONQUER- Recursively solve the smaller subproblems
+        // Build the left subtree using the elements to the left of the midpoint
+        root.left = divideAndConquer(preorder, preIdx, inorderMap, inStart, rootIdx - 1);
+        
+        // Build the right subtree using the elements to the right of the midpoint
+        root.right = divideAndConquer(preorder, preIdx, inorderMap, rootIdx + 1, inEnd);
 
-        // Slice arrays and recursively build left and right subtrees
-        // Left subtree arrays
-        int[] leftPre = Arrays.copyOfRange(preorder, 1, mid + 1);
-        int[] leftIn = Arrays.copyOfRange(inorder, 0, mid);
-        root.left = buildTree(leftPre, leftIn);
-
-        // Right subtree arrays
-        int[] rightPre = Arrays.copyOfRange(preorder, mid + 1, preorder.length);
-        int[] rightIn = Arrays.copyOfRange(inorder, mid + 1, inorder.length);
-        root.right = buildTree(rightPre, rightIn);
-
+        //  COMBINE- Return the constructed root node with its subtrees attached
         return root;
     }
 }
